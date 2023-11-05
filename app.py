@@ -23,26 +23,24 @@ for _ in range(10):
     cursor.execute("INSERT INTO tabela_personagens (numero_aleatorio, personagem) VALUES (?, ?)",
                    (numero_aleatorio, personagem))
 
-# Cria a tabela trimestral e insere dados com os personagens
-cursor.execute('''CREATE TABLE IF NOT EXISTS tabela_trimestral
+# Cria a tabela de meses
+cursor.execute('''CREATE TABLE IF NOT EXISTS tabela_meses
                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
                  numero_aleatorio INT,
                  personagem TEXT,
-                 trimestre TEXT)''')
+                 mes TEXT)''')
 
-trimestre = 'Primeiro Trimestre'
 for _ in range(10):
+    mes = random.choice(['Janeiro', 'Fevereiro', 'Março'])
     numero_aleatorio = random.randint(1, 100)
     personagem = gerar_personagem()
-    cursor.execute("INSERT INTO tabela_trimestral (numero_aleatorio, personagem, trimestre) VALUES (?, ?, ?)",
-                   (numero_aleatorio, personagem, trimestre))
+    cursor.execute("INSERT INTO tabela_meses (numero_aleatorio, personagem, mes) VALUES (?, ?, ?)",
+                   (numero_aleatorio, personagem, mes))
 
-conn.commit()
 
 # Seleciona os dados da tabela de personagens
 cursor.execute("SELECT numero_aleatorio, personagem FROM tabela_personagens")
 data = cursor.fetchall()
-conn.close()
 
 # Indica o personagem com o pior número
 pior_personagem = min(data, key=lambda x: x[0])[1]
@@ -61,6 +59,20 @@ plt.xlabel('Número Aleatório')
 plt.ylabel('Personagem')
 plt.title('Números Aleatórios Associados a Personagens')
 plt.gca().invert_yaxis()
+
+# Seleciona os dados da tabela de meses
+cursor.execute("SELECT numero_aleatorio, mes FROM tabela_meses")
+data_meses = cursor.fetchall()
+
+numeros_aleatorios_meses = [row[0] for row in data_meses]
+meses = [row[1] for row in data_meses]
+
+# Cria o gráfico para a tabela de meses
+plt.figure(figsize=(10, 6))
+bars_meses = plt.bar(meses, numeros_aleatorios_meses, color='lightgreen')
+plt.xlabel('Mês')
+plt.ylabel('Número Aleatório')
+plt.title('Números Aleatórios por Mês')
 
 plt.show()
 
