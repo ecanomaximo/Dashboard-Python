@@ -61,15 +61,24 @@ plt.title('Números Aleatórios Associados a Personagens')
 plt.gca().invert_yaxis()
 
 # Seleciona os dados da tabela de meses
-cursor.execute("SELECT numero_aleatorio, mes FROM tabela_meses")
+cursor.execute("SELECT numero_aleatorio, mes, personagem FROM tabela_meses")
 data_meses = cursor.fetchall()
 
 numeros_aleatorios_meses = [row[0] for row in data_meses]
 meses = [row[1] for row in data_meses]
+melhor_personagem_mes = max(data_meses, key=lambda x: x[0])[2]  # Encontrar o personagem com a maior pontuação
 
 # Cria o gráfico para a tabela de meses
 plt.figure(figsize=(10, 6))
 bars_meses = plt.bar(meses, numeros_aleatorios_meses, color='lightgreen')
+
+# Adiciona o nome do melhor personagem apenas uma vez no meio de cada coluna
+for i, x in enumerate(meses):
+    if i == len(meses) // 2:
+        plt.text(x, numeros_aleatorios_meses[i] + 5, melhor_personagem_mes, color='green', fontsize=10, ha='center', va='bottom')
+    else:
+        plt.text(x, numeros_aleatorios_meses[i] + 5, "", ha='center', va='bottom')  # Adiciona texto vazio
+
 plt.xlabel('Mês')
 plt.ylabel('Número Aleatório')
 plt.title('Números Aleatórios por Mês')
